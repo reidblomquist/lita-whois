@@ -10,6 +10,14 @@ module Lita
       )
 
       route(
+        /^whois\s(?:http|https):\/\/[a-z0-9]+(?:[\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(?:(?::[0-9]{1,5})?\/[^\s]*)?/,
+        :whois_uri,
+        help: {
+          'whois https://www.google.com' => 'Get the WHOIS for the host of a full URL'
+        }
+      )
+
+      route(
         /^whois\s.(\w+)$/,
         :whois_tld,
         help: {
@@ -28,6 +36,10 @@ module Lita
       def whois_domain(response)
         response.reply(lookup("#{response.matches[0][0]}." \
                               "#{response.matches[0][1]}"))
+      end
+
+      def whois_uri(response)
+        response.reply(uri_lookup(response.matches[0].gsub(/whois /, '')))
       end
 
       def whois_tld(response)
@@ -52,6 +64,11 @@ module Lita
         end
 
         record.to_s
+      end
+
+      def uri_lookup(input)
+        uri = URI(input)
+        lookup(uri.host)
       end
 
       def reverse_lookup(ip)

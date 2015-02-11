@@ -8,3 +8,4 @@ require 'lita/handlers/whois'
 
 require 'ipaddress'
 require 'whois'
+require 'uri'
